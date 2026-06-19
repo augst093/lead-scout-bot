@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: lead-scout-bot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      # --- REQUIRED: set these in Render dashboard ---
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ADMIN_TELEGRAM_ID
+        sync: false
+      # --- OPTIONAL API Keys ---
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GOOGLE_CX
+        sync: false
+      - key: BRAVE_API_KEY
+        sync: false
+      - key: SERPAPI_KEY
+        sync: false
+      - key: SERPER_API_KEY
+        sync: false
+      - key: PAGESPEED_API_KEY
+        sync: false
+      # --- Bot defaults ---
+      - key: MINIMUM_SCORE
+        value: "7"
+      - key: DEFAULT_CITIES
+        value: "Dallas,Austin,Miami,Brooklyn,Los Angeles,London,Toronto,Dubai"
+      - key: ENABLED_NICHES
+        value: "fitness,nails,creators"
+      - key: SCHEDULED_SEARCH_ENABLED
+        value: "false"
+      - key: SCHEDULED_SEARCH_FREQUENCY_HOURS
+        value: "2"
+      - key: MAX_LEADS_PER_RUN
+        value: "10"

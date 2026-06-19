@@ -1,0 +1,20 @@
+# fly.toml — Fly.io configuration for Lead Scout Bot
+app = "lead-scout-bot"
+primary_region = "iad"  # Washington DC — closest to most users
+
+[build]
+  dockerfile = "Dockerfile"
+
+# No HTTP server needed — this is a pure Telegram polling bot
+[processes]
+  app = "python bot.py"
+
+# Persistent volume for SQLite database
+[mounts]
+  source = "lead_scout_data"
+  destination = "/data"
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1

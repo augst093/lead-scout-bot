@@ -1,0 +1,11 @@
+.env
+leads.db
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.log
+scratch/
+.fly/
+flyctl.exe
