@@ -69,7 +69,9 @@ async def run_search_for_niche_city(niche: str, city: str, limit: int, min_score
                     "acuityscheduling.com", "squareup.com", "square.site",
                     "mindbodyonline.com", "schedulicity.com", "glofox.com",
                     "styleseat.com", "genbook.com", "timely.com", "setmore.com",
-                    "book.app", "booker.com", "reservio.com", "simplybook.me"
+                    "book.app", "booker.com", "reservio.com", "simplybook.me",
+                    "simplybook", "yclients", "dikidi", "masters.app", 
+                    "rubitime", "qnits", "widget.salon", "profsalon", "app.apparent"
                 ]
                 check_text = " ".join([
                     lead.get("snippet", ""),
@@ -77,7 +79,30 @@ async def run_search_for_niche_city(niche: str, city: str, limit: int, min_score
                     r.get("url", "")
                 ]).lower()
                 if any(svc in check_text for svc in BOOKING_SERVICES):
+                    logger.info(f"Skipping lead {lead.get('name')} due to booking platform link.")
                     continue
+                
+                # Filter website TLDs: if they have a website link that is not a link-in-bio site,
+                # it MUST end in .com. All other custom TLDs (.net, .org, .co, .ru, etc.) are ignored.
+                if lead.get("website_url"):
+                    from urllib.parse import urlparse
+                    parsed_web = urlparse(lead["website_url"])
+                    web_domain = parsed_web.netloc.lower()
+                    if web_domain.startswith("www."):
+                        web_domain = web_domain[4:]
+                    
+                    LINK_BIO_SERVICES = [
+                        "linktr.ee", "beacons.ai", "beacons.page", "stan.store", 
+                        "taplink.cc", "taplink.ws", "taplink", "campsite.bio", 
+                        "solo.to", "milkshake.app", "lnk.bio", "heylink.me", "heylink"
+                    ]
+                    
+                    is_link_bio = any(lb in web_domain for lb in LINK_BIO_SERVICES)
+                    if not is_link_bio:
+                        if not web_domain.endswith(".com"):
+                            logger.info(f"Skipping lead {lead.get('name')} because website {lead['website_url']} does not end with .com")
+                            continue
+
                 
                 lead["pagespeed_score"] = -1
                 
