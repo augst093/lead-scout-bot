@@ -901,6 +901,9 @@ async def post_init(application) -> None:
 
 def main():
     """Starts the Telegram bot application loop."""
+    # START HEALTH SERVER FIRST — Render needs HTTP response within seconds of boot
+    threading.Thread(target=_start_health_server, daemon=True).start()
+
     try:
         asyncio.get_event_loop()
     except RuntimeError:
@@ -948,10 +951,7 @@ def main():
     # 3. Inline Button Callbacks
     application.add_handler(CallbackQueryHandler(callback_query_handler))
     
-    # 4. Start health-check server in background thread (for Render keep-alive)
-    threading.Thread(target=_start_health_server, daemon=True).start()
-
-    # 5. Start Event Loop (Blocking)
+    # 4. Start Event Loop (Blocking)
     logger.info("Bot is polling. Press Ctrl+C to terminate.")
     application.run_polling()
 
